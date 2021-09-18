@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+  cdn-balancer:
+    container_name: cdn-balancer
+    image: nginx:latest
+    build: ./
+    links:
+      - "cdn-node1:node1"
+      - "cdn-node1:node2"
+      - "cdn-node1:node3"
+      - "source:source"
+    volumes:
+      - ./:/var/www/nginx
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 8080:80
+
+  cdn-node1:
+    container_name: cdn-node1
+    image: nginx:latest
+    volumes:
+      - ./node.conf:/etc/nginx/nginx.conf
+
+  cdn-node2:
+    container_name: cdn-node2
+    image: nginx:latest
+    volumes:
+      - ./node.conf:/etc/nginx/nginx.conf
+
+  cdn-node3:
+    container_name: cdn-node3
+    image: nginx:latest
+    volumes:
+      - ./node.conf:/etc/nginx/nginx.conf
+
+  source:
+    container_name: source
+    image: nginx:latest
+    volumes:
+      - ./:/var/www/nginx
+      - ./source.conf:/etc/nginx/nginx.conf
